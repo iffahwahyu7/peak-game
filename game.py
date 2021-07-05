@@ -1,6 +1,7 @@
 import pygame
 from random import randint
 import time
+import sys
 
 #waktu
 clock=pygame.time.Clock()
@@ -49,7 +50,7 @@ click = pygame.mouse.get_pressed()
 
 #Style Judul Permainan
 def message_display(text, x, y, fs):
-    largeText = pygame.font.SysFont('Calibri', 27)
+    largeText = pygame.font.SysFont('Calibri', 17)
     TextSurf, TextRect = text_objects(text, largeText)
     TextRect.center = (x,y)
     window.blit(TextSurf,TextRect)
@@ -61,7 +62,7 @@ def text_objects(text,font):
 
 #Style message ststus
 def message_status(text, x, y, fs, c):
-    largeText=pygame.font.SysFont('Calibri', 27)
+    largeText=pygame.font.SysFont('Calibri', 17)
     TextSurf, TextRect = text_objects1(text, largeText)
     TextRect.center = (x,y)
     window.blit(TextSurf, TextRect)
@@ -103,8 +104,10 @@ def tali(x):
 
 #Alur jurang
 def jurang(x):
-    if x == 57: return 32
-    elif x == 83: return 42
+    if x == 57: return 49
+    elif x == 83: return 66
+    elif x == 42: return 36
+    elif x == 32: return 13
     else: return x
 
 #Memunculkan dadu sesuai angka
@@ -175,11 +178,6 @@ def turn(posisi, status_tali, status_jurang):
             pygame.display.update()
     return posisi , status_tali, status_jurang
 
-
-#def turn_kee(turn_ke)
-    
-    
-
 #Definisi untuk keluar permainan
 def Quit():
     pygame.quit()
@@ -187,7 +185,7 @@ def Quit():
 
 #Mulai bermain
 def play(jumlah_pemain):
-    time= 3000
+    time= 0
 
     #Memunculkan background dan papan
     window.blit(background, (0,0))
@@ -197,23 +195,22 @@ def play(jumlah_pemain):
     x_posisiawal = 175
     y_posisiawal = 410
 
-    x_player1 = x_player3 = x_player4 = x_posisiawal
-    y_player1 = y_player3 = y_player4 = y_posisiawal
-
-    x_player2 = 800
-    y_player2 = 2000
-
     #Posisi awal player 1
     window.blit(player1, (x_posisiawal, y_posisiawal))
     
-    if 5>jumlah_pemain>1: 
-        window.blit(player2, (x_posisiawal - 60, y_posisiawal))
+    if jumlah_pemain==2: 
+        window.blit(player2, (115, 410))
 
-    if 5>jumlah_pemain>2:
-        window.blit(player3, (x_posisiawal - 120, y_posisiawal))
+    elif jumlah_pemain==3:
+        window.blit(player2, (115, 410))
+        window.blit(player3, (55, 410))
 
-    if 5>jumlah_pemain>3:
-        window.blit(player4, (x_posisiawal - 180, y_posisiawal))
+    elif jumlah_pemain==4:
+        window.blit(player2, (115, 410))
+        window.blit(player3, (55, 410))
+        window.blit(player4, (35, 410))
+    else:
+        window.blit(player1, (x_posisiawal, y_posisiawal))
 
     #Awal bermain   
     p1="Player 1"
@@ -231,16 +228,25 @@ def play(jumlah_pemain):
 
     turn_ke=1
 
-    
+    x_player1 = 175
+    x_player2 = 115
+    x_player3 = 55
+    x_player4 = 15
+    y_player1 = 410
+    y_player2 = 410
+    y_player3 = 410
+    y_player4 = 410
+
     mulai_bermain = True
     while mulai_bermain:
         status_tali = False
         status_jurang = False
         
+        
         time=3000
 
         #Menampilkan background
-        #window.blit(background, (0,0))
+        window.blit(background, (0,0))
         window.blit(papan, (240,0))
 
         #Mouse
@@ -261,6 +267,7 @@ def play(jumlah_pemain):
                 if turn_ke==1:
                     posisi_p1, status_tali, status_jurang = turn(posisi_p1,status_tali,status_jurang)
                     
+                    
                     x_player1, y_player1 = posisi_gambar(posisi_p1)
                     
                     turn_ke+=1
@@ -269,13 +276,15 @@ def play(jumlah_pemain):
                     if posisi_p1==100:
                         time=pygame.time.get_ticks()
                         while pygame.time.get_ticks()-time<2000:
-                            message_status("Player 1 Menang", 25,60,50,50,hitam)
+                            message_status("Player 1 Menang", 120,60,35,hitam)
                             pygame.display.update()
                         break
 
+            window.blit(player1, (x_player1, y_player1))
+
             if button_mengocokdadu("Player 2", mouse[0],mouse[1],400,550,200,50,kuning,biru,30):
                 if turn_ke==2:
-                    posisi_p2,status_tali,status_tali=turn(posisi_p2,status_tali,status_jurang)
+                    posisi_p2,status_tali,status_jurang=turn(posisi_p2,status_tali,status_jurang)
                     
                     x_player2, y_player2 = posisi_gambar(posisi_p2)
                     turn_ke+=1
@@ -285,16 +294,15 @@ def play(jumlah_pemain):
                     if posisi_p2==100:
                         time=pygame.time.get_ticks()
                         while pygame.time.get_ticks()-time<2000:
-                            message_status("Player 2 Menang", 25,60,50,color1)
+                            message_status("Player 2 Menang", 120,60,35,hitam)
                             pygame.display.update()
                         break
 
-            window.blit(player1, (x_player1, y_player1))
             window.blit(player2, (x_player2, y_player2))
         
         #Jika player hanya 3
         if 5>jumlah_pemain>2:
-            if button_mengocokdadu("Player 3",mouse[0],mouse[1],700,550,200,50,kuning,biru,30):
+            if button_mengocokdadu("Player 3",mouse[0],mouse[1],100,610,200,50,kuning,biru,30):
                 if turn_ke==3:
                     posisi_p3,status_tali,status_jurang = turn(posisi_p3, status_tali,status_jurang)
                     
@@ -306,17 +314,15 @@ def play(jumlah_pemain):
                     if posisi_p3==100:
                         time=pygame.time.get_ticks()
                         while pygame.time.get_ticks()-time<2000:
-                            message_status("Player 3 Menang",25,60,50,color1)
+                            message_status("Player 3 Menang",120,60,35,hitam)
                             pygame.display.update()
                         break
 
-            window.blit(player1, (x_player1, y_player1))
-            window.blit(player2, (x_player2, y_player2))
             window.blit(player3, (x_player3, y_player3))
 
         #Jika pemain hanya empat
         if 5>jumlah_pemain>3:
-            if button_mengocokdadu("Player 4", mouse[0],mouse[1],1000,550,200,50,kuning,biru,30):
+            if button_mengocokdadu("Player 4", mouse[0],mouse[1],400,610,200,50,kuning,biru,30):
                 if turn_ke==4:
                     posisi_p4,status_tali,status_jurang = turn(posisi_p4,status_tali,status_jurang)
                     
@@ -328,33 +334,31 @@ def play(jumlah_pemain):
                     if posisi_p4==100:
                         time=pygame.time.get_ticks()
                         while pygame.time.get_ticks()-time<2000:
-                            message_status("Player 4 Menang", 25,60,50,color1)
+                            message_status("Player 4 Menang", 120,60,35,hitam)
                             pygame.display.update()
-
                         break
 
-            window.blit(player1, (x_player1, y_player1))
-            window.blit(player2, (x_player2, y_player2))
-            window.blit(player3, (x_player3, y_player3))
             window.blit(player4, (x_player4, y_player4))
 
         if status_tali:
             time=pygame.time.get_ticks()
             while pygame.time.get_ticks()-time<2000:
-                message_status("Selamat anda berada", 60,60,35,hitam)
-                message_status("di daerah Tali !", 60, 90, 35, hitam)
-                message_status("Anda akan naik",60,120,40,hitam)
+                message_status("Selamat anda berada", 129,60,35,hitam)
+                message_status("di daerah Tali !", 120, 90, 35, hitam)
+                message_status("Anda akan naik",120,120,40,hitam)
                 pygame.display.update()
 
         if status_jurang:
             time=pygame.time.get_ticks()
             while pygame.time.get_ticks()-time<2000:
-                message_status("Sayang sekali, anda", 60,60,35,hitam)
-                message_status("berada di jurang!", 60, 90, 35, hitam)
-                message_status("Anda akan turun", 60,120,40, hitam)
+                message_status("Sayang sekali, anda", 120,60,35,hitam)
+                message_status("berada di jurang!", 120, 90, 35, hitam)
+                message_status("Anda akan turun", 120,120,40, hitam)
                 pygame.display.update()
 
         clock.tick(7)
         pygame.display.update()
 
-play(2)
+total_pemain = sys.argv[1]
+total_pemain = int(total_pemain)
+play(total_pemain)
